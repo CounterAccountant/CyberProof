@@ -1,0 +1,31 @@
+version: "3"
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "${MONGO_PORT}:27017"
+    environment:
+      MONGO_INITDB_DATABASE: cyberproof
+  web:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      env_file: .env
+    links:
+      - mongo
+  client:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    environment:
+      env_file: .env
+      NODE_ENV: development
+    ports:
+      - "${CLIENT_PORT}:80"
+    links:
+      - web
+volumes:
+  logvolume01: {}
